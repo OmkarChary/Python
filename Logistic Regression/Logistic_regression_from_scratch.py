@@ -44,10 +44,15 @@ class LogisticRegression:
         
 bc = datasets.load_breast_cancer()
 X, y = bc.data, bc.target
+m_samples, n_features = X.shape
+print(X.shape)
+print(type(X))
+ones = np.ones((m_samples, 1))
+X = np.append( X, ones)
+print( X )
+#X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 1234)
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 1234)
-
-def accuracy(y_true, y_pred):
+""" def accuracy(y_true, y_pred):
     accuracy = np.sum(y_true == y_pred) / len(y_true)
     return accuracy
 
@@ -56,3 +61,4 @@ regressor.fit(X_train, y_train)
 predictions = regressor.predicted(X_test)
 
 print("LR classification accuracy:{}".format(accuracy(y_test, predictions)))
+print(x) """

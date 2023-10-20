@@ -24,7 +24,7 @@ def gradient_decent(w1_cur, w0_cur, x, y, L_rate):
         y = Y[i]
         y_cap = w1_cur * x + w0_cur
         w1_grad +=  -(2/n) * x * (y - y_cap)
-        w0_grad += -(2/n) * (y - y_cap)
+        w0_grad += -(2/n) * (y - y_cap) 
         
     w1 = w1_cur - w1_grad * L_rate
     w0 = w0_cur - w0_grad * L_rate
