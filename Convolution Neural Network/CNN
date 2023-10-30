@@ -1,0 +1,53 @@
+# Importing necessary libraries
+import tensorflow as tf
+from tensorflow.keras import datasets, layers, models
+
+# LeNet-5 model
+class LeNet5(models.Model):
+    def __init__(self):
+        super(LeNet5, self).__init__()
+        # Load and preprocess the MNIST dataset
+        (self.train_images, self.train_labels), (self.test_images, self.test_labels) = datasets.mnist.load_data()
+        self.train_images = self.train_images.reshape((60000, 28, 28, 1))
+        self.test_images = self.test_images.reshape((10000, 28, 28, 1))
+        
+        # Normalize pixel values to be between 0 and 1
+        self.train_images, self.test_images = self.train_images / 255.0, self.test_images / 255.0
+        self.conv1 = layers.Conv2D(6, kernel_size=(5, 5), padding='same', activation='relu')
+        self.avg_pool = layers.AveragePooling2D()
+        self.conv2 = layers.Conv2D(16, kernel_size=(5, 5), activation='relu')
+        self.fc1 = layers.Dense(120, activation='relu')
+        self.fc2 = layers.Dense(84, activation='relu')
+        self.output_layer = layers.Dense(10)
+
+    def call(self, x):
+        x = self.conv1(x)
+        x = self.avg_pool(x)
+        x = self.conv2(x)
+        x = self.avg_pool(x)
+        x = layers.Flatten()(x)
+        x = self.fc1(x)
+        x = self.fc2(x)
+        return self.output_layer(x)
+
+# Instantiate and compile model
+model = LeNet5()
+model.compile(optimizer='adam', loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True), metrics=['accuracy'])
+# Train the model with the MNIST dataset
+model.fit(model.train_images, model.train_labels, epochs=5)
+
+# Test the model with the MNIST dataset
+test_loss, test_acc = model.evaluate(model.test_images,  model.test_labels, verbose=2)
+print('\nTest accuracy:', test_acc)
+
+# Test with some random test sample
+import numpy as np
+random_test_index = np.random.randint(model.test_images.shape[0])
+random_test_image = model.test_images[random_test_index]
+random_test_label = model.test_labels[random_test_index]
+prediction = model.predict(random_test_image.reshape(1, 28, 28, 1))
+
+print('Predicted label:', np.argmax(prediction))
+print('True label:', random_test_label)
+
+
